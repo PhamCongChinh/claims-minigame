@@ -1,0 +1,1 @@
+query_id=AAESTRtAAwAAABJNG0DCORPD&user=%7B%22id%22%3A7517981970%2C%22first_name%22%3A%22Dao%22%2C%22last_name%22%3A%22Nguyen%22%2C%22language_code%22%3A%22en%22%2C%22allows_write_to_pm%22%3Atrue%7D&auth_date=1728533627&hash=53b358c86e34802ab0ca371a59ffc8d479f5c00b5b75fc9a6fcc3a938c033778
