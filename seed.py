@@ -1,17 +1,13 @@
-import sys
-import time
-import random
-import os
-import cloudscraper
-import json
-scraper = cloudscraper.create_scraper()
+import sys, time, random, os, cloudscraper, json
 from base import common, countdown
+
+scraper = cloudscraper.create_scraper()
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 data_file = os.path.join(script_dir, "data/seed.txt")
 class Seed:
     def __init__(self):
-        pass
+        self.banner = common.create_banner(game_name="Seed")
 
     def headers(self, query_id):
         return {
@@ -26,8 +22,27 @@ class Seed:
 
     def balance(self, data):
         url = f"https://elb.seeddao.org/api/v1/profile/balance"
-        response = scraper.get(url=url, headers=self.headers(data))
-        return response
+        try:
+            response = scraper.get(url=url, headers=self.headers(data))
+            return response.json()
+        except:
+            return None
+    def daily_login(self, data):
+        url = f"https://elb.seeddao.org/api/v1/daily-login-streak"
+        try:
+            response = scraper.get(url=url, headers=self.headers(data))
+            res = json.loads(response.text)
+            return res
+        except:
+            return None
+
+    def profile2(self, data):
+        url = f"https://elb.seeddao.org/api/v1/profile2"
+        try:
+            response = scraper.get(url=url, headers=self.headers(data))
+            return response.json()
+        except:
+            return None
 
     def get_worms(self, data):
         url = f"https://elb.seeddao.org/api/v1/worms"
@@ -42,8 +57,7 @@ class Seed:
     def login_bonus(self, data):
         url = f"https://elb.seeddao.org/api/v1/login-bonuses"
         response = scraper.get(url=url, headers=self.headers(data))
-        print(response)
-        return response
+        return response.text
 
     def get_tasks(self, data):
         url = f"https://elb.seeddao.org/api/v1/tasks/progresses"
@@ -55,17 +69,20 @@ class Seed:
         return response
     def main(self):
         while True:
+            common.clear_terminal()
+            print(self.banner)
             data = open(data_file, "r").read().splitlines()
             for no, data in enumerate(data):
-                try:
-                    balance = self.balance(data).json()
-                    balance_data = balance["data"]
-                    common.log(f"{common.blue}Tài sản: {balance_data}")
-                except Exception as e:
-                    common.log(e)
+                balance = self.balance(data)
+                balance_data = balance["data"]
+                common.log(f"{common.green}Tài sản: {common.white}{balance_data}")
+                time.sleep(2)
+                daily_login1 = self.profile2(data)
+                print(daily_login1)
 
-                check_daily = self.login_bonus(data)
-                print(check_daily.json())
+
+                # check_daily = self.login_bonus(data)
+                # print(check_daily.json())
                 # try:
                 #     time.sleep(1)
                 #
@@ -112,7 +129,7 @@ class Seed:
             # except Exception as e:
             #     common.log(e)
 
-            wait_time = random.randint(10, 20)
+            wait_time = random.randint(30, 60)
             common.log(f"Thời gian chờ: {wait_time} giây")
             countdown(wait_time)
 
